@@ -16,6 +16,7 @@ import org.broadinstitute.hellbender.utils.test.BaseTest;
 import org.broadinstitute.hellbender.utils.variant.MinimalVariant;
 import org.broadinstitute.hellbender.utils.variant.Variant;
 import org.broadinstitute.hellbender.utils.variant.VariantContextVariantAdapter;
+import org.broadinstitute.hellbender.utils.variant.VariantContextVariantAdaptorTestFactory;
 import org.broadinstitute.hellbender.utils.variant.VariantUtils;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -26,10 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
-// Why this static import? We need to be able to set UUID, but we don't want to expose this to the dev code,
-// so we put in in VariantContextVariantAdapterTest.
-import static org.broadinstitute.hellbender.utils.variant.VariantContextVariantAdapterTest.createVariantContextVariantAdapterForTesting;
 
 public class VariantSourceUnitTest extends BaseTest {
     private static final String FEATURE_DATA_SOURCE_TEST_DIRECTORY = publicTestDir + "org/broadinstitute/hellbender/engine/";
@@ -44,7 +41,7 @@ public class VariantSourceUnitTest extends BaseTest {
         @Override
         public void processElement(ProcessContext c) throws Exception {
             VariantContextVariantAdapter variantContextVariantAdapterForTesting =
-                    createVariantContextVariantAdapterForTesting(((VariantContextVariantAdapter) c.element()), defaultUUID());
+                    VariantContextVariantAdaptorTestFactory.createWithKnownUUID(((VariantContextVariantAdapter) c.element()), defaultUUID());
             c.output(variantContextVariantAdapterForTesting);
         }
     }
@@ -53,7 +50,7 @@ public class VariantSourceUnitTest extends BaseTest {
     public void testVariantPCollection(final List<Variant> variants) {
         for (int i = 0; i < variants.size(); ++i) {
             // Update the element with a cleared UUID.
-            variants.set(i, createVariantContextVariantAdapterForTesting(((VariantContextVariantAdapter) variants.get(i)), defaultUUID()));
+            variants.set(i, VariantContextVariantAdaptorTestFactory.createWithKnownUUID(((VariantContextVariantAdapter) variants.get(i)), defaultUUID()));
         }
         // Now make a PCollection, to verify that variants can be coded.
         Pipeline p = GATKTestPipeline.create();

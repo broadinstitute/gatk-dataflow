@@ -3,7 +3,7 @@ package org.broadinstitute.hellbender.tools.dataflow.pipelines;
 import com.google.common.collect.Lists;
 import org.broadinstitute.hellbender.cmdline.StandardArgumentDefinitions;
 import org.broadinstitute.hellbender.engine.dataflow.DataflowCommandLineProgramTest;
-import org.broadinstitute.hellbender.tools.IntegrationTestSpec;
+import org.broadinstitute.hellbender.utils.test.IntegrationTestSpec;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -41,7 +41,7 @@ public final class FlagStatDataflowIntegrationTest extends DataflowCommandLinePr
 
         File outputFile = findDataflowOutput(placeHolder);
         Assert.assertTrue(outputFile.exists());
-        IntegrationTestSpec.assertMatchingFiles(Lists.newArrayList(outputFile), Lists.newArrayList(getToolTestDataDir()+"/" + "expectedStats.txt"));
+        IntegrationTestSpec.assertMatchingFiles(Lists.newArrayList(outputFile), Lists.newArrayList(getToolTestDataDir() + "/" + "expectedStats.txt"));
 
 
     }

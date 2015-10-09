@@ -1,55 +1,41 @@
 language: java
-addons:
-  apt:
-    sources:
-    - r-packages-precise
-    packages:
-    - r-base
 jdk:
 - oraclejdk8
 env:
   matrix:
   - CLOUD=mandatory
-  - CLOUD=todo
+# tests that should be fixed
+#  - CLOUD=todo  
   - CLOUD=false
-  - DATAFLOW_RUNNER=SparkPipelineRunner CLOUD=false SPARK=false
+# tests on spark dataflow
+#  - DATAFLOW_RUNNER=SparkPipelineRunner CLOUD=false SPARK=false
   global:
-  #gradle needs this
   - TERM=dumb
-  #google cloud stuff
   - CLOUDSDK_CORE_DISABLE_PROMPTS=1
-  - GCLOUD=$HOME/gcloud/google-cloud-sdk/bin 
-  - CLOUDSDK_PYTHON_SITEPACKAGES=1 
+  - GCLOUD=$HOME/gcloud/google-cloud-sdk/bin
+  - CLOUDSDK_PYTHON_SITEPACKAGES=1
   - GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/servicekey.json
-  #hellbender specific variables
-  - HELLBENDER_TEST_INPUTS=gs://hellbender/test/resources/
-  - HELLBENDER_TEST_STAGING=gs://hellbender/test/staging/
+  - HELLBENDER_TEST_INPUTS=gs://hellbender-dataflow/test/resources/
+  - HELLBENDER_TEST_STAGING=gs://hellbender-dataflow/test/staging/
   - HELLBENDER_TEST_PROJECT=broad-dsde-dev
-  #coveralls repo token
-  - secure: RA4LKD82cW+0xPayPVAWSpYqJu5uoPcz7oXXYtYNVuilFmS8PGYx0g/BXs4QMvQsGMt6aMLN8m7lMAPN5XTH/8JSeM3VmQ3mdpgNdP+p3CVlwrapZ2lTq27Wb/E8J1CGEHOg76z716t//FUElyC/gdhS+tfBmXk3YanM5fMXEHs=
-  #google API key
-  - secure: GyC3Th11Gryeokc2UucWTS/Rc6AB+4ZRcSzpmLliTEtrCvDt+sXPxTH9z7GKiwqz0Ep91TTot/G8fDdSIUa+50itV1WKGDtkoRAvkG6Mt7bWm+5Cy6ZbPhktX+dWR5ks/9R8EBlJ5oiC6WkMcqlwZ90DftcHYOOF5+4ToCp7HzM=
+  #HELLBENDER_API_KEY
+  - secure: gp+MWEex7I7G6mw53fFliJBigd8U/um+opy4YCTIo0QWtke54kL6RdmGARXPzpv5s9Es6c8n2Dus9wBVtVZwU+8vfVKWxD5JVCZKTa+pSoNHdZiZ1lm7ct1RO7P5fjvoaF/aRlUH5DOeGzbgd//XNMYLZ5rSRrGUPAW5i5QY3/qV4EV0GFU8f6BcmzOZO+6Td3o/nwZKWYsjT+2zE6SDiwZTczd2HrdiE6qYMkJKBg4ziWqAc67v9qW4m0ZxRgDmWvXfP3rwsWbQu+bYDktSq8uo/eIAHA0UILaO5PCvKeG6TEx4TSTbaA4ERtwYDHFyzuEROISZq/2J25OjwpFDk+kg8Q4HQHz5XFokbGLGpJplxwfUrZYm6vi1dnpggCxYk+qXbkv7NzVJG8MpALL9ah0p2ASgMPCRUfMHekKtmZVENGTLtoqg3uwGsB+itQhUL/u9tIWLdweSRm39DujCM9HPtZEQxuUqRNBj+CxlK6mNRC3kyPnTUvHoFh8+9G2SKo9hFBc+WIAKRVDF+kYpIaYQlerDee8dDdqszLRvggUbTL6yNYZbBrEGVTmqLnvqxQ4vMsohMBer0ID0bCyo0bq/azjxuAN8H9JQrkmL8aXhkS3ZGBX3U7kKGr8CKR6JqxKf8hASKNodGS0UD+gy/Bs5zY+NQMk3Z+mwyo4/IDU=
 matrix:
   fast_finish: true
   allow_failures:
-    - env: DATAFLOW_RUNNER=SparkPipelineRunner CLOUD=false SPARK=false
-    - env: CLOUD=todo
+  - env: DATAFLOW_RUNNER=SparkPipelineRunner CLOUD=false SPARK=false
+  - env: CLOUD=todo
 cache:
   directories:
   - ~/.gradle
   - $HOME/gcloud/
-
 before_install:
-#download large files
-- bash scripts/install_git_lfs.sh
-#setup google stuff
-- openssl aes-256-cbc -K $encrypted_29f3b7c4d8c3_key -iv $encrypted_29f3b7c4d8c3_iv
-  -in resources_for_CI/servicekey.json.enc -out servicekey.json -d
+- openssl aes-256-cbc -K $encrypted_4431db025263_key -iv $encrypted_4431db025263_iv
+  -in resources_for_CI/broad-dsde-development-21a276055326.json.enc -out servicekey.json -d
 - scripts/install_gcloud.sh
 - printf 'y\n' | $GCLOUD/gcloud components update app
 - $GCLOUD/gcloud config set project broad-dsde-dev
 - $GCLOUD/gcloud auth activate-service-account --key servicekey.json
-- R --version
 after_success:
 - ./gradlew jacocoTestReport coveralls
 after_failure:
@@ -57,5 +43,5 @@ after_failure:
 after_script:
 - $GCLOUD/gcloud components -q update gsutil
 - REPORT_PATH=$TRAVIS_BRANCH_$TRAVIS_JOB_NUMBER
-- $GCLOUD/gsutil -m cp -z html -z js -z xml -z css -r build/reports/tests gs://hellbender/test/build_reports/$REPORT_PATH/
-- echo "See the test report at https://storage.googleapis.com/hellbender/test/build_reports/$REPORT_PATH/tests/index.html"
+- $GCLOUD/gsutil -m cp -z html -z js -z xml -z css -r build/reports/tests gs://hellbender-dataflow/test/build_reports/$REPORT_PATH/
+- echo "See the test report at https://storage.googleapis.com/hellbender-dataflow/test/build_reports/$REPORT_PATH/tests/index.html"

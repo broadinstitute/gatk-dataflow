@@ -2,7 +2,7 @@ package org.broadinstitute.hellbender.tools.dataflow.transforms.markduplicates;
 
 import org.broadinstitute.hellbender.cmdline.CommandLineProgram;
 import org.broadinstitute.hellbender.engine.dataflow.DataflowCommandLineProgramTest;
-import org.broadinstitute.hellbender.utils.read.markduplicates.AbstractMarkDuplicatesTester;
+import org.broadinstitute.hellbender.utils.test.testers.AbstractMarkDuplicatesTester;
 
 /**
  * This class is an extension of AbstractMarkDuplicatesCommandLineProgramTester used to test MarkDuplicates with SAM files generated on the fly.

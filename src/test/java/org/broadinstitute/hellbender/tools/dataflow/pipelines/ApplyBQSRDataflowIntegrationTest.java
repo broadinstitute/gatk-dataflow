@@ -2,8 +2,8 @@ package org.broadinstitute.hellbender.tools.dataflow.pipelines;
 
 import org.broadinstitute.hellbender.engine.dataflow.DataflowCommandLineProgramTest;
 import org.broadinstitute.hellbender.exceptions.UserException;
-import org.broadinstitute.hellbender.tools.IntegrationTestSpec;
 import org.broadinstitute.hellbender.utils.test.ArgumentsBuilder;
+import org.broadinstitute.hellbender.utils.test.IntegrationTestSpec;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
